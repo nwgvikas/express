@@ -24,6 +24,13 @@
 .DS_Store
 *.pem
 
+# User-uploaded post images (keep folder via .gitkeep)
+/public/uploads/posts/*
+!/public/uploads/posts/.gitkeep
+
+/public/uploads/branding/*
+!/public/uploads/branding/.gitkeep
+
 # debug
 npm-debug.log*
 yarn-debug.log*

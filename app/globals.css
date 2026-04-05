@@ -12,15 +12,19 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* Light UI site-wide (header, feed, backoffice). OS dark mode se body black na ho —
+   pehle translucent `bg-zinc-100/80` ke peeche #0a0a0a dikhta tha. */
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* TipTap placeholder (PostContentEditor) */
+.post-content-editor .tiptap p.is-editor-empty:first-child::before {
+  color: #a1a1aa;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
 }
