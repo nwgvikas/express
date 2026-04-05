@@ -1,6 +1,7 @@
 import { randomUUID } from "crypto";
 import { mkdir, writeFile } from "fs/promises";
 import path from "path";
+import { isBlobUploadConfigured, putPublicBlob } from "@/helper/upload-blob";
 
 const LOGO_MIME: Record<string, string> = {
   "image/jpeg": ".jpg",
@@ -62,9 +63,31 @@ export async function saveBrandingFile(
     };
   }
 
+  const name = `${kind}-${randomUUID()}${ext}`;
+
+  if (isBlobUploadConfigured()) {
+    try {
+      const url = await putPublicBlob(`branding/${name}`, file);
+      return { ok: true, publicPath: url };
+    } catch (e) {
+      console.error("saveBrandingFile blob:", e);
+      return {
+        ok: false,
+        error: "Upload failed — check Vercel Blob (Storage) and BLOB_READ_WRITE_TOKEN.",
+      };
+    }
+  }
+
+  if (process.env.VERCEL) {
+    return {
+      ok: false,
+      error:
+        "File upload needs Vercel Blob: Dashboard → Storage → Blob → Create & connect to this project.",
+    };
+  }
+
   const dir = path.join(process.cwd(), "public", "uploads", "branding");
   await mkdir(dir, { recursive: true });
-  const name = `${kind}-${randomUUID()}${ext}`;
   const abs = path.join(dir, name);
   const buf = Buffer.from(await file.arrayBuffer());
   await writeFile(abs, buf);
