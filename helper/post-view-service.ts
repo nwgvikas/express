@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import { connectDB } from "@/helper/db";
 import { Post } from "@/models/post";
 import { PostView } from "@/models/post-view";
-import { publishedFilter } from "@/helper/public-post-service";
+import { normalizePublicPostSlug, publishedFilter } from "@/helper/public-post-service";
 
 function hashClientIp(rawIp: string): string {
   const ip = rawIp.trim() || "unknown";
@@ -19,7 +19,7 @@ export async function recordPostViewForSlug(
   clientIp: string,
 ): Promise<{ ok: true; viewCount: number } | { ok: false; error: "not_found" }> {
   await connectDB();
-  const s = slug.trim().toLowerCase();
+  const s = normalizePublicPostSlug(slug);
   if (!s) {
     return { ok: false, error: "not_found" };
   }

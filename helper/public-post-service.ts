@@ -18,6 +18,21 @@ export function publishedFilter(extra: Record<string, unknown> = {}) {
   };
 }
 
+/** URL / `[slug]` param se — decode (1–2 baar) + trim + lowercase; DB `slug` ke saath match. */
+export function normalizePublicPostSlug(raw: string): string {
+  let s = String(raw ?? "").trim();
+  for (let i = 0; i < 2; i++) {
+    try {
+      const next = decodeURIComponent(s);
+      if (next === s) break;
+      s = next.trim();
+    } catch {
+      break;
+    }
+  }
+  return s.toLowerCase();
+}
+
 export type PublicPostCard = {
   id: string;
   slug: string;
@@ -266,7 +281,8 @@ export async function getPublishedPostFullBySlug(
 ): Promise<{ card: PublicPostCard; contentHtml: string; comments: PublicPostComment[] } | null> {
   try {
     await connectDB();
-    const s = slug.trim().toLowerCase();
+    const s = normalizePublicPostSlug(slug);
+    if (!s) return null;
     const p = await Post.findOne(publishedFilter({ slug: s })).lean();
     if (!p) return null;
 
@@ -335,6 +351,31 @@ export async function getPublishedBreakingTicker(): Promise<{
     return { title, slug };
   } catch {
     return null;
+  }
+}
+
+/** Top N published posts marked breaking (homepage ticker + list). */
+export async function getPublishedBreakingTopN(
+  limit: number,
+): Promise<{ title: string; slug: string }[]> {
+  const n = Math.min(20, Math.max(1, Math.floor(limit)));
+  try {
+    await connectDB();
+    const rows = await Post.find(publishedFilter({ isBreaking: true }))
+      .sort({ updatedAt: -1 })
+      .limit(n)
+      .select("title slug")
+      .lean();
+    const out: { title: string; slug: string }[] = [];
+    for (const p of rows) {
+      const title = (p.title as string)?.trim();
+      const slug = (p.slug as string)?.trim();
+      if (!title || !slug) continue;
+      out.push({ title, slug });
+    }
+    return out;
+  } catch {
+    return [];
   }
 }
 

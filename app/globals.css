@@ -20,6 +20,34 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Homepage BREAKING strip — seamless horizontal marquee (track is 2× duplicate) */
+@keyframes breaking-marquee-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.breaking-marquee-animate {
+  animation-name: breaking-marquee-scroll;
+  animation-duration: var(--breaking-marquee-duration, 40s);
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .breaking-marquee-animate {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .breaking-marquee-animate .breaking-marquee-dup {
+    display: none !important;
+  }
+}
+
 /* TipTap placeholder (PostContentEditor) */
 .post-content-editor .tiptap p.is-editor-empty:first-child::before {
   color: #a1a1aa;

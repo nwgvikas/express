@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useState } from "react";
 import { formatCommentDateEnIn } from "@/helper/format-post-date";
 import { usePostExpandOptional } from "./post-expand-context";
@@ -62,6 +63,8 @@ type Props = {
   slug: string;
   excerpt: string;
   isSample: boolean;
+  /** Full article URL (e.g. `/news/slug`) — “Read full story” opens this page. */
+  articlePath: string;
   /** After “show more”, server returns updated viewCount (unchanged if IP was already counted). */
   onViewCount?: (count: number) => void;
 };
@@ -71,6 +74,7 @@ export function HomePostExpandableBody({
   slug,
   excerpt,
   isSample,
+  articlePath,
   onViewCount,
 }: Props) {
   const ctx = usePostExpandOptional();
@@ -185,7 +189,14 @@ export function HomePostExpandableBody({
         {excerpt ? (
           <p className="line-clamp-3 text-sm leading-relaxed text-zinc-700">{excerpt}</p>
         ) : null}
-        <p className="text-xs text-zinc-400">Demo preview — the full article opens here on the real post.</p>
+        <p className="text-xs text-zinc-400">Demo preview — same page par poori story + share link.</p>
+        <Link
+          href={articlePath}
+          className="inline-flex items-center gap-1 text-sm font-semibold text-blue-600 underline-offset-2 hover:text-blue-800 hover:underline"
+        >
+          Read full story
+          <span aria-hidden>→</span>
+        </Link>
       </div>
     );
   }
@@ -199,7 +210,7 @@ export function HomePostExpandableBody({
           {excerpt}
         </p>
       ) : null}
-      <div className="pt-0.5">
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-2 pt-0.5">
         <button
           type="button"
           onClick={onToggle}
@@ -215,6 +226,13 @@ export function HomePostExpandableBody({
             {isExpanded ? ", collapse full post" : ", expand full post on this page"}
           </span>
         </button>
+        <Link
+          href={articlePath}
+          className="inline-flex items-center gap-1 text-sm font-semibold text-blue-600 underline-offset-2 hover:text-blue-800 hover:underline"
+        >
+          Read full story
+          <span aria-hidden>→</span>
+        </Link>
       </div>
       {loading ? <p className="text-sm text-zinc-500">Loading…</p> : null}
       {err ? <p className="text-sm text-red-600">{err}</p> : null}

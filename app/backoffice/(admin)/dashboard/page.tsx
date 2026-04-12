@@ -85,6 +85,13 @@ const quickActions = [
     style: "from-amber-500 to-orange-600 shadow-amber-500/25",
   },
   {
+    href: "/backoffice/users",
+    title: "Users",
+    desc: "Members & admins list",
+    icon: "👥",
+    style: "from-indigo-600 to-violet-700 shadow-indigo-500/25",
+  },
+  {
     href: "/backoffice/breaking",
     title: "Breaking ribbon",
     desc: "Homepage ticker text",

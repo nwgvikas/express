@@ -1,5 +1,6 @@
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
+import { normalizePublicPostSlug } from "@/helper/public-post-service";
 import { recordPostViewForSlug } from "@/helper/post-view-service";
 
 export const dynamic = "force-dynamic";
@@ -23,7 +24,7 @@ function clientIpFromHeaders(h: Headers): string {
 export async function POST(_request: Request, context: RouteContext) {
   try {
     const { slug: raw } = await context.params;
-    const slug = decodeURIComponent(raw || "").trim();
+    const slug = normalizePublicPostSlug(raw || "");
     if (!slug) {
       return NextResponse.json({ error: "Invalid slug" }, { status: 400 });
     }

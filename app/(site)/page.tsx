@@ -60,7 +60,12 @@ export default async function HomePage({ searchParams }: PageProps) {
 
   return (
     <div className="bg-zinc-100">
-      <HomeBreakingBar label={breaking.label} line={breaking.line} href={breaking.href} />
+      <HomeBreakingBar
+        label={breaking.label}
+        line={breaking.line}
+        href={breaking.href}
+        breakingItems={breaking.breakingItems}
+      />
 
       {/*
         lg+: Row height = viewport minus ~site header + breaking bar. Left/right columns

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getPublishedPostFullBySlug } from "@/helper/public-post-service";
+import { getPublishedPostFullBySlug, normalizePublicPostSlug } from "@/helper/public-post-service";
 
 export const dynamic = "force-dynamic";
 
@@ -7,8 +7,8 @@ type RouteContext = { params: Promise<{ slug: string }> };
 
 /** Published post ka HTML body — feed par inline expand ke liye (sirf public). */
 export async function GET(_request: Request, context: RouteContext) {
-  const { slug } = await context.params;
-  const s = decodeURIComponent(slug || "").trim();
+  const { slug: raw } = await context.params;
+  const s = normalizePublicPostSlug(raw || "");
   if (!s) {
     return NextResponse.json({ error: "Invalid slug" }, { status: 400 });
   }

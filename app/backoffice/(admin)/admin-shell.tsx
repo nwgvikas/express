@@ -13,6 +13,7 @@ const nav = [
   { href: "/backoffice/posts", label: "Post list", icon: IconList },
   { href: "/backoffice/breaking", label: "Breaking", icon: IconBolt },
   { href: "/backoffice/comments", label: "Comments", icon: IconChat },
+  { href: "/backoffice/users", label: "Users", icon: IconUsers },
 ];
 
 function IconHome({ className }: { className?: string }) {
@@ -66,6 +67,23 @@ function IconChat({ className }: { className?: string }) {
         strokeLinecap="round"
         strokeLinejoin="round"
         d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+      />
+    </svg>
+  );
+}
+
+function IconUsers({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" aria-hidden>
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.246 0A9.337 9.337 0 0 0 15 19.128ZM4.5 20.25a8.954 8.954 0 0 1 5.365-2.598m5.365 2.598a8.954 8.954 0 0 0 5.365-2.598M18 10.5h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z"
+      />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM9 12.75A3.75 3.75 0 0 0 5.25 16.5v.188c0 .621.504 1.125 1.125 1.125h11.25c.621 0 1.125-.504 1.125-1.125V16.5a3.75 3.75 0 0 0-3.75-3.75H9Z"
       />
     </svg>
   );
@@ -134,6 +152,9 @@ function pageHeading(pathname: string): string {
   }
   if (pathname === "/backoffice/comments" || pathname.startsWith("/backoffice/comments/")) {
     return "Comments";
+  }
+  if (pathname === "/backoffice/users" || pathname.startsWith("/backoffice/users/")) {
+    return "Users";
   }
   if (pathname.startsWith("/backoffice/settings/social")) {
     return "Social links";

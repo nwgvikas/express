@@ -18,7 +18,7 @@ function cardThumb(post: PublicPostCard): string | null {
 
 export function HomePostCard({ post }: { post: PublicPostCard }) {
   const isSample = post.id.startsWith("sample");
-  const href = `/news/${post.slug}`;
+  const href = `/news/${encodeURIComponent(post.slug)}`;
   const thumb = cardThumb(post);
   const youtubeId =
     post.mediaType === "youtube" && post.youtubeUrl
@@ -37,9 +37,15 @@ export function HomePostCard({ post }: { post: PublicPostCard }) {
     youtubeId != null ? (
       <PostYoutubeClickPlay videoId={youtubeId} title={post.title} />
     ) : thumb != null ? (
-      <div className="relative aspect-video w-full bg-zinc-200">
+      <div className="relative w-full overflow-hidden bg-zinc-100">
+        {/* object-contain: tall/editorial graphics (text on image) crop na hon; aspect-video + cover neeche ka text kaat deta tha */}
         {/* eslint-disable-next-line @next/next/no-img-element -- admin / external URLs */}
-        <img src={thumb} alt="" className="h-full w-full object-cover" />
+        <img
+          src={thumb}
+          alt=""
+          className="mx-auto block w-full max-h-[min(85vw,520px)] object-contain sm:max-h-[560px]"
+          loading="lazy"
+        />
       </div>
     ) : null;
 

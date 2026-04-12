@@ -1,10 +1,12 @@
 import { getAdminGeneralSettings, normalizeOutboundUrl } from "@/helper/admin-settings-service";
-import { getPublishedBreakingTicker } from "@/helper/public-post-service";
+import { getPublishedBreakingTopN } from "@/helper/public-post-service";
 
 export type LandingBreakingResolved = {
   label: string;
   line: string;
   href?: string;
+  /** Up to 5 published `isBreaking` posts — marquee + scroll list. */
+  breakingItems: { title: string; slug: string }[];
 };
 
 function resolveRibbonHref(raw: string): string | undefined {
@@ -24,6 +26,8 @@ export async function getLandingBreakingResolved(
 ): Promise<LandingBreakingResolved> {
   const s = await getAdminGeneralSettings();
   const label = (s.breakingLabel || "BREAKING").trim() || "BREAKING";
+  const breakingItems = await getPublishedBreakingTopN(5);
+  const topBreaking = breakingItems[0];
 
   const customLine = (s.breakingRibbonText || "").trim();
   if (customLine) {
@@ -32,12 +36,17 @@ export async function getLandingBreakingResolved(
       label,
       line: customLine,
       href: hrefRaw ? resolveRibbonHref(hrefRaw) : undefined,
+      breakingItems,
     };
   }
 
-  const ticker = await getPublishedBreakingTicker();
-  if (ticker?.title) {
-    return { label, line: ticker.title, href: `/news/${ticker.slug}` };
+  if (topBreaking?.title) {
+    return {
+      label,
+      line: topBreaking.title,
+      href: `/news/${encodeURIComponent(topBreaking.slug)}`,
+      breakingItems,
+    };
   }
 
   const fb = feedFallback;
@@ -45,7 +54,8 @@ export async function getLandingBreakingResolved(
     return {
       label,
       line: fb.title.trim(),
-      href: `/news/${fb.slug.trim()}`,
+      href: `/news/${encodeURIComponent(fb.slug.trim())}`,
+      breakingItems,
     };
   }
 
@@ -53,5 +63,6 @@ export async function getLandingBreakingResolved(
     label,
     line: "Stay with UNNAO EXPRESS for the latest news and local updates.",
     href: undefined,
+    breakingItems,
   };
 }

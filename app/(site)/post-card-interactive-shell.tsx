@@ -51,6 +51,7 @@ export function PostCardInteractiveShell({
         slug={slug}
         excerpt={excerpt}
         isSample={isSample}
+        articlePath={articlePath}
         onViewCount={isSample ? undefined : setViewCount}
       />
       <div
