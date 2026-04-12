@@ -227,11 +227,12 @@ export async function saveAdminLegalPagesSettings(input: AdminLegalPagesSettings
   const termsContent = String(input.termsContent ?? "").slice(0, LEGAL_MAX_LEN);
   const privacyContent = String(input.privacyContent ?? "").slice(0, LEGAL_MAX_LEN);
   const payload = { termsContent, privacyContent };
-  /** Hydrated document + `.save()` — `$set` ke saath kabhi-kabhi stale schema / lean mismatch se bachte. */
-  const one = await AdminSettings.findOne().sort({ createdAt: 1 });
-  if (one) {
-    one.set(payload);
-    await one.save();
+  const one = await AdminSettings.findOne().sort({ createdAt: 1 }).select("_id").lean();
+  if (one?._id) {
+    const r = await AdminSettings.updateOne({ _id: one._id }, { $set: payload });
+    if (r.matchedCount === 0) {
+      throw new Error("Admin settings row update failed");
+    }
     return;
   }
   await AdminSettings.create({

@@ -1,5 +1,6 @@
 import { createHmac, timingSafeEqual } from "crypto";
 
+
 export const ADMIN_SESSION_COOKIE = "backoffice_session";
 
 function getSecret(): string | null {

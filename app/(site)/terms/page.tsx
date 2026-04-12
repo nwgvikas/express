@@ -1,12 +1,15 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { getSiteBrandingSafe } from "@/helper/site-branding";
 import { LegalTextArticle } from "../legal-text-article";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
-  title: "Terms & Conditions",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const s = await getSiteBrandingSafe();
+  const base = s.siteName?.trim() || "Unnao Express";
+  return { title: `${base} — Terms & Conditions` };
+}
 
 export default async function TermsPage() {
   const s = await getSiteBrandingSafe();
@@ -20,9 +23,10 @@ export default async function TermsPage() {
           ← Home
         </Link>
         <LegalTextArticle
+          siteName={s.siteName}
           title="Terms & Conditions"
           body={s.termsContent}
-          emptyMessage="No text here yet. Add content in Admin → Settings → Terms & Privacy."
+          emptyMessage="No text here yet. Add content in Backoffice → Settings → Terms & Privacy."
         />
       </div>
     </div>

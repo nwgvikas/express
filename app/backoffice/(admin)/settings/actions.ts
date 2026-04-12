@@ -159,8 +159,8 @@ export async function saveLegalPagesAction(data: SaveLegalPagesInput): Promise<S
       privacyContent: String(data.privacyContent ?? ""),
     });
     revalidatePath("/backoffice/settings/legal");
-    revalidatePath("/terms", "page");
-    revalidatePath("/privacy", "page");
+    revalidatePath("/terms");
+    revalidatePath("/privacy");
     return { ok: true, message: "Terms & Privacy saved to MongoDB (admin_settings)." };
   } catch (e) {
     console.error("saveLegalPagesAction:", e);

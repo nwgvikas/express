@@ -1,7 +1,11 @@
 import { randomUUID } from "crypto";
 import { mkdir, writeFile } from "fs/promises";
 import path from "path";
-import { isBlobUploadConfigured, putPublicBlob } from "@/helper/upload-blob";
+import {
+  formatBlobUploadError,
+  isBlobUploadConfigured,
+  putPublicBlob,
+} from "@/helper/upload-blob";
 
 const MIME_EXT: Record<string, string> = {
   "image/jpeg": ".jpg",
@@ -35,10 +39,7 @@ export async function savePostImageFile(
       return { ok: true, publicPath: url };
     } catch (e) {
       console.error("savePostImageFile blob:", e);
-      return {
-        ok: false,
-        error: "Upload failed — check Vercel Blob (Storage) and BLOB_READ_WRITE_TOKEN.",
-      };
+      return { ok: false, error: formatBlobUploadError(e) };
     }
   }
 
